@@ -337,7 +337,9 @@ function buildWindows(hourly: HourPoint[]): RideWindow[] {
     else flush();
   }
   flush();
-  return windows.sort((a, b) => b.score - a.score).slice(0, 8);
+  // Keep the eight best windows, then show them in the order they'll happen.
+  const best = [...windows].sort((a, b) => b.score - a.score).slice(0, 8);
+  return windows.filter((w) => best.includes(w));
 }
 
 export async function fetchReport(): Promise<SurfReport> {
