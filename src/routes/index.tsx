@@ -10,6 +10,7 @@ import {
   dayLabel,
   degToCompass,
   fetchReport,
+  isFuture,
   isStale,
   ratingWord,
   readCache,
@@ -65,7 +66,7 @@ function Cell({
   sub?: React.ReactNode;
 }) {
   return (
-    <div className="flex aspect-square flex-col justify-between bg-background p-4">
+    <div className="flex min-h-[112px] flex-col justify-between gap-6 bg-background p-4">
       <span className="text-[9px] font-bold uppercase text-muted-foreground">{label}</span>
       <div className="flex flex-wrap items-baseline gap-2">
         <span className="font-display text-4xl leading-none">
@@ -115,7 +116,7 @@ function Index() {
 
   const c = report?.current;
   const upcomingTides = (report?.tides ?? [])
-    .filter((t) => new Date(t.time).getTime() > Date.now() - 36e5)
+    .filter((t) => isFuture(t.time))
     .slice(0, 6);
   const timeline = (report?.hourly ?? []).filter((_, i) => i % 3 === 0).slice(0, 16);
 

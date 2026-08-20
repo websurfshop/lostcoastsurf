@@ -177,10 +177,22 @@ export function scoreConditions(p: {
 const fmt = (d: Date, opts: Intl.DateTimeFormatOptions) =>
   new Intl.DateTimeFormat("en-US", { timeZone: "America/Los_Angeles", ...opts }).format(d);
 
+/**
+ * NOAA and Open-Meteo return local Pacific timestamps with no zone suffix.
+ * Read them as wall-clock values so the report reads the same from anywhere.
+ */
+const parseLocal = (iso: string) => new Date(`${iso}${/[Zz+]|-\d\d:\d\d$/.test(iso.slice(10)) ? "" : "Z"}`);
+
+export const localHour = (iso: string) => parseLocal(iso).getUTCHours();
+
 export const timeLabel = (iso: string) =>
-  fmt(new Date(iso), { hour: "numeric", minute: "2-digit" });
+  new Intl.DateTimeFormat("en-US", { timeZone: "UTC", hour: "numeric", minute: "2-digit" }).format(
+    parseLocal(iso),
+  );
 export const dayLabel = (iso: string) =>
-  fmt(new Date(iso), { weekday: "short" }).toUpperCase();
+  new Intl.DateTimeFormat("en-US", { timeZone: "UTC", weekday: "short" })
+    .format(parseLocal(iso))
+    .toUpperCase();
 export const stampLabel = (ms: number) =>
   fmt(new Date(ms), { hour: "numeric", minute: "2-digit", timeZoneName: "short" });
 
@@ -236,19 +248,28 @@ async function fetchTides(): Promise<TideEvent[]> {
   }));
 }
 
+/** Milliseconds Pacific time is behind UTC right now. */
+const PT_OFFSET_MS = () => {
+  const now = new Date();
+  const asPT = new Date(now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }));
+  const asUTC = new Date(now.toLocaleString("en-US", { timeZone: "UTC" }));
+  return asUTC.getTime() - asPT.getTime();
+};
+
 const num = (s: string | undefined) => (s === "MM" || s === undefined ? null : Number(s));
 
 async function fetchBuoy(): Promise<BuoyObs> {
   const target = `https://www.ndbc.noaa.gov/data/realtime2/${BUOY_ID}.txt`;
+  // NDBC does not send CORS headers, so read it through a public text mirror
+  // first and only fall back to the direct URL.
   let text: string;
   try {
-    const res = await fetch(target);
-    if (!res.ok) throw new Error("ndbc " + res.status);
-    text = await res.text();
-  } catch {
-    // NDBC does not send CORS headers; relay through a public text mirror.
     const res = await fetch(`https://r.jina.ai/${target}`);
     if (!res.ok) throw new Error("ndbc relay " + res.status);
+    text = await res.text();
+  } catch {
+    const res = await fetch(target);
+    if (!res.ok) throw new Error("ndbc " + res.status);
     text = await res.text();
   }
   const lines = text
@@ -310,7 +331,7 @@ function buildWindows(hourly: HourPoint[]): RideWindow[] {
   };
 
   for (const h of hourly) {
-    const hour = new Date(h.time).getHours();
+    const hour = localHour(h.time);
     const daylight = hour >= 6 && hour <= 20;
     if (daylight && h.score >= 5.5) run.push(h);
     else flush();
@@ -362,7 +383,7 @@ export async function fetchReport(): Promise<SurfReport> {
       };
       return { ...base, score: scoreConditions(base) };
     })
-    .filter((h: HourPoint) => new Date(h.time).getTime() >= nowMs - 36e5);
+    .filter((h: HourPoint) => parseLocal(h.time).getTime() >= nowMs - 36e5 - PT_OFFSET_MS());
 
   const mc = marine.current;
   const wc = weather?.current;
@@ -395,6 +416,10 @@ export async function fetchReport(): Promise<SurfReport> {
 }
 
 /* ---------------------------------- cache ---------------------------------- */
+
+export function isFuture(iso: string): boolean {
+  return parseLocal(iso).getTime() >= Date.now() - PT_OFFSET_MS() - 36e5;
+}
 
 export function readCache(): SurfReport | null {
   if (typeof window === "undefined") return null;
