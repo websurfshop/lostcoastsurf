@@ -93,7 +93,7 @@ export function degToCompass(deg: number | null | undefined): string {
     "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
     "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW",
   ];
-  return pts[Math.round(((deg % 360) / 22.5)) % 16];
+  return pts[Math.round((deg % 360) / 22.5) % 16] ?? "—";
 }
 
 /** Angular difference in degrees, 0–180. */
@@ -236,7 +236,7 @@ async function fetchTides(): Promise<TideEvent[]> {
   }));
 }
 
-const num = (s: string) => (s === "MM" || s === undefined ? null : Number(s));
+const num = (s: string | undefined) => (s === "MM" || s === undefined ? null : Number(s));
 
 async function fetchBuoy(): Promise<BuoyObs> {
   const target = `https://www.ndbc.noaa.gov/data/realtime2/${BUOY_ID}.txt`;
@@ -266,7 +266,7 @@ async function fetchBuoy(): Promise<BuoyObs> {
     }
     return null;
   };
-  const r0 = rows[0];
+  const r0 = rows[0]!;
   const mps = (v: number | null) => (v == null ? null : Math.round(v * 1.94384 * 10) / 10);
   const m2ft = (v: number | null) => (v == null ? null : Math.round(v * 3.28084 * 10) / 10);
   const c2f = (v: number | null) => (v == null ? null : Math.round((v * 9) / 5 + 32) );
@@ -294,10 +294,12 @@ function buildWindows(hourly: HourPoint[]): RideWindow[] {
   const flush = () => {
     if (run.length >= 2) {
       const best = run.reduce((a, b) => (b.score > a.score ? b : a));
+      const first = run[0]!;
+      const last = run[run.length - 1]!;
       windows.push({
-        day: dayLabel(run[0].time),
-        start: timeLabel(run[0].time),
-        end: timeLabel(run[run.length - 1].time),
+        day: dayLabel(first.time),
+        start: timeLabel(first.time),
+        end: timeLabel(last.time),
         score: best.score,
         note: `${best.swellHeight?.toFixed(1) ?? "—"}ft @ ${
           best.swellPeriod?.toFixed(0) ?? "—"
