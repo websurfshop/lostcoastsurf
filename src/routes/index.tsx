@@ -17,8 +17,10 @@ import {
   readCache,
   stampLabel,
   timeLabel,
+  windLabel,
   writeCache,
 } from "@/lib/surf";
+
 
 
 export const Route = createFileRoute("/")({
