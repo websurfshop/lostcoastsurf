@@ -16,6 +16,8 @@ import {
   ratingWord,
   readCache,
   stampLabel,
+  tideNow,
+
   timeLabel,
   windLabel,
   writeCache,
@@ -156,6 +158,8 @@ function Index() {
   }, [load]);
 
   const c = report?.current;
+  const tide = tideNow(report?.tides);
+
   const upcomingTides = (report?.tides ?? [])
     .filter((t) => isFuture(t.time))
     .slice(0, 6);
@@ -234,7 +238,19 @@ function Index() {
           <Cell label="Wave Height" value={n1(c?.waveHeight)} unit="ft" />
           <Cell label="Water Temp" value={n1(c?.waterTemp, 0)} unit="°F" />
           <Cell label="Air Temp" value={n1(c?.airTemp, 0)} unit="°F" />
-          <Cell label="Pressure" value={n1(c?.pressure, 0)} unit="mb" />
+          <Cell
+            label="Tide Now"
+            value={tide ? tide.height.toFixed(1) : "—"}
+            unit="ft"
+            sub={
+              tide ? (
+                <span className="border border-foreground px-1 text-xs font-bold">
+                  {tide.trend === "rising" ? "↑ IN" : "↓ OUT"}
+                </span>
+              ) : undefined
+            }
+          />
+
         </section>
 
         <section className="animate-rise [animation-delay:200ms]">
