@@ -16,6 +16,8 @@ import {
   ratingWord,
   readCache,
   stampLabel,
+  tideNow,
+
   timeLabel,
   windLabel,
   writeCache,
@@ -156,6 +158,8 @@ function Index() {
   }, [load]);
 
   const c = report?.current;
+  const tide = tideNow(report?.tides);
+
   const upcomingTides = (report?.tides ?? [])
     .filter((t) => isFuture(t.time))
     .slice(0, 6);
