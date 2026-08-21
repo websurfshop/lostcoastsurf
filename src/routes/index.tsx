@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 
 import {
+  BANNERS,
   BREAK,
   BUOY_ID,
   CACHE_TTL_MS,
@@ -19,6 +20,8 @@ import {
   windLabel,
   writeCache,
 } from "@/lib/surf";
+
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -79,7 +82,45 @@ function Cell({
   );
 }
 
+function BannerSection() {
+  return (
+    <section className="animate-rise border border-foreground/10 bg-card/60 p-3">
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+          Local Board
+        </h2>
+        <span className="text-[9px] uppercase tracking-wider text-muted-foreground">
+          Edit listings in src/lib/surf.ts
+        </span>
+      </div>
+      <div className="grid gap-3">
+        {BANNERS.map((b) => (
+          <a
+            key={b.title}
+            href={b.href}
+            className="group flex flex-col gap-1 border border-foreground/10 bg-background p-3 transition-colors hover:border-primary/60"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-[9px] font-bold uppercase tracking-widest text-primary">
+                {b.kind}
+              </span>
+              <span className="text-[10px] font-bold text-foreground opacity-0 transition-opacity group-hover:opacity-100">
+                {b.cta} &rarr;
+              </span>
+            </div>
+            <h3 className="font-display text-lg uppercase leading-tight tracking-tight">
+              {b.title}
+            </h3>
+            <p className="text-[10px] leading-relaxed text-muted-foreground">{b.description}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function Index() {
+
   const [report, setReport] = useState<SurfReport | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -140,7 +181,10 @@ function Index() {
       </header>
 
       <main className="mx-auto max-w-md space-y-8 px-4 py-8">
+        <BannerSection />
+
         <section className="animate-rise">
+
           <h1 className="mb-2 text-[10px] uppercase tracking-[0.2em]">
             Break: {BREAK.name} / {BREAK.area}
           </h1>
