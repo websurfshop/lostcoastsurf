@@ -20,6 +20,25 @@ export const LINKS = {
   weather: `https://forecast.weather.gov/MapClick.php?lat=${LAT}&lon=${LON}`,
 };
 
+/** Local classified / real estate listings shown above the surf report. */
+export const BANNERS = [
+  {
+    kind: "Real Estate" as const,
+    title: "Oceanfront lot — Shelter Cove",
+    description: "Rare buildable parcel overlooking Deadman's. Owner financing available.",
+    cta: "Inquire",
+    href: "mailto:you@lostcoastsurf.com?subject=Real Estate Listing",
+  },
+  {
+    kind: "Classified" as const,
+    title: "9'0 longboard for sale",
+    description: "Single-fin, water tight, includes bag. $450 OBO. Pick up in Ferndale.",
+    cta: "Contact",
+    href: "mailto:you@lostcoastsurf.com?subject=Classified Ad",
+  },
+];
+
+
 export const BREAK = {
   name: "Deadman's",
   area: "Shelter Cove, CA",
