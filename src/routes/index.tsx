@@ -181,7 +181,10 @@ function Index() {
       </header>
 
       <main className="mx-auto max-w-md space-y-8 px-4 py-8">
+        <BannerSection />
+
         <section className="animate-rise">
+
           <h1 className="mb-2 text-[10px] uppercase tracking-[0.2em]">
             Break: {BREAK.name} / {BREAK.area}
           </h1>
