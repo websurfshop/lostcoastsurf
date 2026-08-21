@@ -157,7 +157,12 @@ function Index() {
           </div>
           {error ? (
             <p className="mt-3 text-[10px] uppercase tracking-wider text-primary">{error}</p>
+          ) : report?.errors.length ? (
+            <p className="mt-3 text-[10px] uppercase tracking-wider text-muted-foreground">
+              {report.errors.join(" · ")}
+            </p>
           ) : null}
+
         </section>
 
         <section className="grid animate-rise grid-cols-2 gap-px border border-foreground/10 bg-foreground/10 [animation-delay:100ms]">

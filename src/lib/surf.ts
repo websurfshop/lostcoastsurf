@@ -199,10 +199,20 @@ export const stampLabel = (ms: number) =>
 /* -------------------------------- fetchers -------------------------------- */
 
 async function getJson(url: string) {
-  const res = await fetch(url);
+  const res = await fetch(url, { headers: { accept: "application/json" } });
   if (!res.ok) throw new Error(`${res.status} ${url}`);
-  return res.json();
+  // Some networks (captive portals, CDN error pages, proxies) answer with HTML
+  // even on a 200. Parsing that as JSON is what produces
+  // "Unexpected token '<'", so detect it and fail with a readable message.
+  const text = await res.text();
+  if (/^\s*</.test(text)) throw new Error(`Non-JSON (HTML) response from ${url}`);
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error(`Malformed JSON from ${url}`);
+  }
 }
+
 
 function yyyymmdd(d: Date) {
   const p = new Intl.DateTimeFormat("en-CA", {
@@ -260,23 +270,38 @@ const num = (s: string | undefined) => (s === "MM" || s === undefined ? null : N
 
 async function fetchBuoy(): Promise<BuoyObs> {
   const target = `https://www.ndbc.noaa.gov/data/realtime2/${BUOY_ID}.txt`;
-  // NDBC does not send CORS headers, so read it through a public text mirror
-  // first and only fall back to the direct URL.
-  let text: string;
-  try {
-    const res = await fetch(`https://r.jina.ai/${target}`);
-    if (!res.ok) throw new Error("ndbc relay " + res.status);
-    text = await res.text();
-  } catch {
-    const res = await fetch(target);
-    if (!res.ok) throw new Error("ndbc " + res.status);
-    text = await res.text();
+  // NDBC sends no CORS headers, so try public text relays in order and fall
+  // back to the direct URL last.
+  const sources = [
+    `https://r.jina.ai/${target}`,
+    `https://corsproxy.io/?${encodeURIComponent(target)}`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(target)}`,
+    target,
+  ];
+
+  let text = "";
+  for (const src of sources) {
+    try {
+      const res = await fetch(src);
+      if (!res.ok) continue;
+      const body = await res.text();
+      if (/^\d{4}\s/m.test(body)) {
+        text = body;
+        break;
+      }
+    } catch {
+      /* try the next relay */
+    }
   }
+  if (!text) throw new Error("ndbc: unreachable");
+
   const lines = text
     .split("\n")
     .map((l) => l.trim())
     .filter((l) => /^\d{4}\s/.test(l));
   if (!lines.length) throw new Error("ndbc: no rows");
+
+
 
   // Walk recent rows so a single all-MM observation doesn't blank the panel.
   const rows = lines.slice(0, 24).map((l) => l.split(/\s+/));
@@ -351,8 +376,8 @@ export async function fetchReport(): Promise<SurfReport> {
     fetchBuoy(),
   ]);
 
-  if (marineR.status === "rejected") throw new Error("Marine forecast unavailable");
-  const marine = marineR.value;
+  const marine = marineR.status === "fulfilled" ? marineR.value : null;
+  if (!marine) errors.push("Marine swell forecast unavailable");
   const weather = weatherR.status === "fulfilled" ? weatherR.value : null;
   if (!weather) errors.push("Wind & air data unavailable");
   const tides = tidesR.status === "fulfilled" ? tidesR.value : [];
@@ -360,7 +385,10 @@ export async function fetchReport(): Promise<SurfReport> {
   const buoy = buoyR.status === "fulfilled" ? buoyR.value : null;
   if (!buoy) errors.push(`Buoy ${BUOY_ID} feed unavailable`);
 
-  const mh = marine.hourly;
+  if (!marine && !weather && !tides.length && !buoy)
+    throw new Error("No data sources reachable");
+
+  const mh = marine?.hourly;
   const wh = weather?.hourly;
   const windAt = (t: string) => {
     if (!wh) return { s: null as number | null, d: null as number | null };
@@ -371,15 +399,16 @@ export async function fetchReport(): Promise<SurfReport> {
   };
 
   const nowMs = Date.now();
-  const hourly: HourPoint[] = mh.time
+  const times: string[] = mh?.time ?? wh?.time ?? [];
+  const hourly: HourPoint[] = times
     .map((t: string, i: number) => {
       const w = windAt(t);
       const base = {
         time: t,
-        waveHeight: mh.wave_height[i],
-        swellHeight: mh.swell_wave_height[i],
-        swellPeriod: mh.swell_wave_period[i],
-        swellDirection: mh.swell_wave_direction[i],
+        waveHeight: mh?.wave_height?.[i] ?? null,
+        swellHeight: mh?.swell_wave_height?.[i] ?? null,
+        swellPeriod: mh?.swell_wave_period?.[i] ?? null,
+        swellDirection: mh?.swell_wave_direction?.[i] ?? null,
         windSpeed: w.s,
         windDirection: w.d,
       };
@@ -387,14 +416,14 @@ export async function fetchReport(): Promise<SurfReport> {
     })
     .filter((h: HourPoint) => parseLocal(h.time).getTime() >= nowMs - 36e5 - PT_OFFSET_MS());
 
-  const mc = marine.current;
+  const mc = marine?.current;
   const wc = weather?.current;
   const currentBase = {
-    time: mc.time,
-    waveHeight: mc.wave_height ?? null,
-    swellHeight: mc.swell_wave_height ?? null,
-    swellPeriod: mc.swell_wave_period ?? null,
-    swellDirection: mc.swell_wave_direction ?? null,
+    time: mc?.time ?? wc?.time ?? new Date().toISOString(),
+    waveHeight: mc?.wave_height ?? buoy?.waveHeight ?? null,
+    swellHeight: mc?.swell_wave_height ?? buoy?.waveHeight ?? null,
+    swellPeriod: mc?.swell_wave_period ?? buoy?.dominantPeriod ?? null,
+    swellDirection: mc?.swell_wave_direction ?? buoy?.meanWaveDir ?? null,
     windSpeed: wc?.wind_speed_10m ?? buoy?.windSpeed ?? null,
     windDirection: wc?.wind_direction_10m ?? buoy?.windDir ?? null,
   };
@@ -405,7 +434,8 @@ export async function fetchReport(): Promise<SurfReport> {
       ...currentBase,
       score: scoreConditions(currentBase),
       airTemp: wc?.temperature_2m ?? buoy?.airTemp ?? null,
-      waterTemp: mc.sea_surface_temperature ?? buoy?.waterTemp ?? null,
+      waterTemp: mc?.sea_surface_temperature ?? buoy?.waterTemp ?? null,
+
       pressure: wc?.surface_pressure ?? buoy?.pressure ?? null,
       windGust: wc?.wind_gusts_10m ?? buoy?.gust ?? null,
     },
