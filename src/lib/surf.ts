@@ -472,6 +472,32 @@ export function isFuture(iso: string): boolean {
   return parseLocal(iso).getTime() >= Date.now() - PT_OFFSET_MS() - 36e5;
 }
 
+/**
+ * Interpolate the current tide level (ft, MLLW) between the surrounding
+ * high/low predictions using a cosine curve, plus its trend.
+ */
+export function tideNow(
+  tides: TideEvent[] | undefined,
+): { height: number; trend: "rising" | "falling" } | null {
+  if (!tides || tides.length < 2) return null;
+  const nowMs = Date.now() - PT_OFFSET_MS();
+  const pts = [...tides].sort(
+    (a, b) => parseLocal(a.time).getTime() - parseLocal(b.time).getTime(),
+  );
+  for (let i = 0; i < pts.length - 1; i++) {
+    const a = pts[i]!;
+    const b = pts[i + 1]!;
+    const ta = parseLocal(a.time).getTime();
+    const tb = parseLocal(b.time).getTime();
+    if (nowMs < ta || nowMs > tb) continue;
+    const f = (nowMs - ta) / (tb - ta);
+    const height = a.height + (b.height - a.height) * ((1 - Math.cos(Math.PI * f)) / 2);
+    return { height, trend: b.height > a.height ? "rising" : "falling" };
+  }
+  return null;
+}
+
+
 export function readCache(): SurfReport | null {
   if (typeof window === "undefined") return null;
   try {
