@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 
 import {
+  BANNERS,
   BREAK,
   BUOY_ID,
   CACHE_TTL_MS,
@@ -16,9 +17,9 @@ import {
   readCache,
   stampLabel,
   timeLabel,
-  windLabel,
   writeCache,
 } from "@/lib/surf";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
