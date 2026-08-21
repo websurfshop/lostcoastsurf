@@ -270,23 +270,38 @@ const num = (s: string | undefined) => (s === "MM" || s === undefined ? null : N
 
 async function fetchBuoy(): Promise<BuoyObs> {
   const target = `https://www.ndbc.noaa.gov/data/realtime2/${BUOY_ID}.txt`;
-  // NDBC does not send CORS headers, so read it through a public text mirror
-  // first and only fall back to the direct URL.
-  let text: string;
-  try {
-    const res = await fetch(`https://r.jina.ai/${target}`);
-    if (!res.ok) throw new Error("ndbc relay " + res.status);
-    text = await res.text();
-  } catch {
-    const res = await fetch(target);
-    if (!res.ok) throw new Error("ndbc " + res.status);
-    text = await res.text();
+  // NDBC sends no CORS headers, so try public text relays in order and fall
+  // back to the direct URL last.
+  const sources = [
+    `https://r.jina.ai/${target}`,
+    `https://corsproxy.io/?${encodeURIComponent(target)}`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(target)}`,
+    target,
+  ];
+
+  let text = "";
+  for (const src of sources) {
+    try {
+      const res = await fetch(src);
+      if (!res.ok) continue;
+      const body = await res.text();
+      if (/^\d{4}\s/m.test(body)) {
+        text = body;
+        break;
+      }
+    } catch {
+      /* try the next relay */
+    }
   }
+  if (!text) throw new Error("ndbc: unreachable");
+
   const lines = text
     .split("\n")
     .map((l) => l.trim())
     .filter((l) => /^\d{4}\s/.test(l));
   if (!lines.length) throw new Error("ndbc: no rows");
+
+
 
   // Walk recent rows so a single all-MM observation doesn't blank the panel.
   const rows = lines.slice(0, 24).map((l) => l.split(/\s+/));
