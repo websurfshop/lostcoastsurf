@@ -199,10 +199,20 @@ export const stampLabel = (ms: number) =>
 /* -------------------------------- fetchers -------------------------------- */
 
 async function getJson(url: string) {
-  const res = await fetch(url);
+  const res = await fetch(url, { headers: { accept: "application/json" } });
   if (!res.ok) throw new Error(`${res.status} ${url}`);
-  return res.json();
+  // Some networks (captive portals, CDN error pages, proxies) answer with HTML
+  // even on a 200. Parsing that as JSON is what produces
+  // "Unexpected token '<'", so detect it and fail with a readable message.
+  const text = await res.text();
+  if (/^\s*</.test(text)) throw new Error(`Non-JSON (HTML) response from ${url}`);
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error(`Malformed JSON from ${url}`);
+  }
 }
+
 
 function yyyymmdd(d: Date) {
   const p = new Intl.DateTimeFormat("en-CA", {
