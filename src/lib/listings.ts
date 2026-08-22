@@ -4,19 +4,22 @@
  * at /listing/<slug>.
  */
 
-import aerial from "@/assets/listing/Aerial_Deer_court.jpg.asset.json";
-import bigPicture from "@/assets/listing/big_picture.jpg.asset.json";
-import boatLaunch from "@/assets/listing/Boat_launch.jpg.asset.json";
-import culdesac from "@/assets/listing/Culdesac_Survey.jpg.asset.json";
-import gentleSlope from "@/assets/listing/Gentle_Slope.jpg.asset.json";
-import goodFishing from "@/assets/listing/Good_fishing.jpg.asset.json";
-import map from "@/assets/listing/Map.jpg.asset.json";
-import plotmap from "@/assets/listing/Plotmap_Survey.jpg.asset.json";
-import taxiway from "@/assets/listing/Taxiway_30.jpg.asset.json";
-import topOfLot from "@/assets/listing/Top_of_Lot.jpg.asset.json";
-import topOfLot2 from "@/assets/listing/Top_of_Lot2.jpg.asset.json";
-import view from "@/assets/listing/View.jpg.asset.json";
-import viewLighthouse from "@/assets/listing/View_of_Lighthouse.jpg.asset.json";
+// Photos live in public/listing/ so they ship as plain static files with the
+// build output (works on Cloudflare Pages and any static host).
+const P = "/listing";
+const aerial = { url: `${P}/Aerial_Deer_court.jpg` };
+const bigPicture = { url: `${P}/big_picture.jpg` };
+const boatLaunch = { url: `${P}/Boat_launch.jpg` };
+const culdesac = { url: `${P}/Culdesac_Survey.jpg` };
+const gentleSlope = { url: `${P}/Gentle_Slope.jpg` };
+const goodFishing = { url: `${P}/Good_fishing.jpg` };
+const map = { url: `${P}/Map.jpg` };
+const plotmap = { url: `${P}/Plotmap_Survey.jpg` };
+const taxiway = { url: `${P}/Taxiway_30.jpg` };
+const topOfLot = { url: `${P}/Top_of_Lot.jpg` };
+const topOfLot2 = { url: `${P}/Top_of_Lot2.jpg` };
+const view = { url: `${P}/View.jpg` };
+const viewLighthouse = { url: `${P}/View_of_Lighthouse.jpg` };
 
 export type Photo = { src: string; alt: string };
 
