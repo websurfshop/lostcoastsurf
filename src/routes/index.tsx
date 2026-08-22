@@ -1,8 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 
 import {
-  BANNERS,
   BREAK,
   BUOY_ID,
   CACHE_TTL_MS,
@@ -17,13 +16,11 @@ import {
   readCache,
   stampLabel,
   tideNow,
-
   timeLabel,
   windLabel,
   writeCache,
 } from "@/lib/surf";
-
-
+import { LISTINGS } from "@/lib/listings";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -92,29 +89,30 @@ function BannerSection() {
           Local Board
         </h2>
         <span className="text-[9px] uppercase tracking-wider text-muted-foreground">
-          Edit listings in src/lib/surf.ts
+          Edit listings in src/lib/listings.ts
         </span>
       </div>
       <div className="grid gap-3">
-        {BANNERS.map((b) => (
-          <a
-            key={b.title}
-            href={b.href}
+        {LISTINGS.map((l) => (
+          <Link
+            key={l.slug}
+            to="/listing/$slug"
+            params={{ slug: l.slug }}
             className="group flex flex-col gap-1 border border-foreground/10 bg-background p-3 transition-colors hover:border-primary/60"
           >
             <div className="flex items-center justify-between gap-3">
               <span className="text-[9px] font-bold uppercase tracking-widest text-primary">
-                {b.kind}
+                {l.kind}
               </span>
               <span className="text-[10px] font-bold text-foreground opacity-0 transition-opacity group-hover:opacity-100">
-                {b.cta} &rarr;
+                {l.cta} &rarr;
               </span>
             </div>
             <h3 className="font-display text-lg uppercase leading-tight tracking-tight">
-              {b.title}
+              {l.title}
             </h3>
-            <p className="text-[10px] leading-relaxed text-muted-foreground">{b.description}</p>
-          </a>
+            <p className="text-[10px] leading-relaxed text-muted-foreground">{l.teaser}</p>
+          </Link>
         ))}
       </div>
     </section>
