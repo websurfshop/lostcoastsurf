@@ -57,7 +57,7 @@ export const LISTINGS: Listing[] = [
     ],
     body: [
       "A rare gentle-slope parcel on a quiet Deer Court cul-de-sac in Shelter Cove, minutes from the boat launch, the airstrip, and the reef at Deadman's.",
-      "The survey and topographic work are already complete and the lot is confirmed buildable, so you can go straight to design instead of spending a season on due diligence.",
+      "The survey and topographic work are already complete and the lot is confirmed buildable, so you can go straight to build instead of spending a season on due diligence.",
       "Sightlines run out over the water toward the Cape Mendocino lighthouse, with black-sand beaches, salmon and rockfish grounds, and the whole King Range wilderness out the back door.",
     ],
     photos: [
@@ -81,31 +81,31 @@ export const LISTINGS: Listing[] = [
     },
     contact: {
       name: "Lost Coast Surf",
-      email: "you@lostcoastsurf.com",
+      email: "websurfshop@gmail.com",
     },
   },
   {
-    slug: "longboard-9-0",
+    slug: "Mowing-Lot-Clearing",
     kind: "Classified",
-    title: "9'0 longboard for sale",
-    teaser: "Single-fin, water tight, includes bag. $450 OBO. Pick up in Ferndale.",
-    cta: "Contact seller",
-    price: "$450 OBO",
+    title: "Mowing / Lot Clearing",
+    teaser: "Weed whipping, chainsaw work, lawn and grass mowing. $25.",
+    cta: "Contact ",
+    price: "$25",
     specs: [
       { label: "Length", value: "9'0" },
       { label: "Setup", value: "Single fin" },
       { label: "Condition", value: "Water tight, minor pressure dings" },
       { label: "Includes", value: "Board bag" },
-      { label: "Pickup", value: "Ferndale, CA" },
+      { label: "Pickup", value: "Shelter Cove, CA" },
     ],
     body: [
-      "Classic 9'0 single-fin longboard — glides on the soft, longer-period days at Shelter Cove and handles the walled-up ones fine too.",
-      "Water tight with a few pressure dings from normal use. Comes with a board bag. Cash on pickup in Ferndale.",
+      "Weed whipping, chainsaw work, lawn and grass mowing. $25.",
+      "Good looking and reliable... lol",
     ],
     photos: [],
     contact: {
       name: "Lost Coast Surf",
-      email: "you@lostcoastsurf.com",
+      email: "websurfshop@gmail.com",
     },
   },
 ];
