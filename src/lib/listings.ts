@@ -44,35 +44,39 @@ export const LISTINGS: Listing[] = [
     slug: "deer-court-oceanview-parcel",
     kind: "Real Estate",
     title: "Buildable oceanview parcel — Deer Court, Shelter Cove",
-    teaser: "Gentle-slope cul-de-sac lot with survey and topo done. Ocean and lighthouse views.",
+    teaser: "Gentle-slope cul-de-sac lot with survey and topo done. Street to street access.  Ocean and lighthouse views.",
     cta: "See the lot",
-    price: "Contact for price",
+    price: "$27,000",
     specs: [
       { label: "Type", value: "Vacant residential lot" },
       { label: "Location", value: "Deer Court cul-de-sac, Shelter Cove" },
       { label: "Views", value: "Ocean, Cape Mendocino lighthouse" },
       { label: "Terrain", value: "Gentle slope, guaranteed buildable" },
-      { label: "Survey", value: "Survey + topo completed" },
+      { label: "Survey", value: "Survey, topography completed by Baird Engineering" },
+      { label: "Engineering", value: "Soils engineering completed" },
+      { label: "Financing", value: "Owner financing available" },
       { label: "Nearby", value: "Airport taxiway, boat launch, Deadman's" },
     ],
     body: [
       "A rare gentle-slope parcel on a quiet Deer Court cul-de-sac in Shelter Cove, minutes from the boat launch, the airstrip, and the reef at Deadman's.",
-      "The survey and topographic work are already complete and the lot is confirmed buildable, so you can go straight to build instead of spending a season on due diligence.",
+      "The survey, soils report, and topographic work are already complete and the lot is confirmed buildable, so you can go straight to build instead of spending a season on due diligence.",
       "Sightlines run out over the water toward the Cape Mendocino lighthouse, with black-sand beaches, salmon and rockfish grounds, and the whole King Range wilderness out the back door.",
+      "Will build to suit, California Contractor License # 341185"
     ],
     photos: [
-      { src: bigPicture.url, alt: "Wide view over the Shelter Cove coastline from the parcel" },
-      { src: aerial.url, alt: "Aerial view of the Deer Court cul-de-sac and surrounding lots" },
+      { src: viewLighthouse.url, alt: "View toward the Cape Mendocino lighthouse" },
+      { src: culdesac.url, alt: "Cul-de-sac engineering survey and topo drawing" },
+      { src: view.url, alt: "Ocean view from the property" },
       { src: topOfLot.url, alt: "Standing at the top of the lot looking toward the ocean" },
       { src: topOfLot2.url, alt: "Second view from the top of the lot" },
-      { src: view.url, alt: "Ocean view from the property" },
-      { src: viewLighthouse.url, alt: "View toward the Cape Mendocino lighthouse" },
       { src: gentleSlope.url, alt: "Gentle slope across the buildable portion of the lot" },
+      { src: plotmap.url, alt: "Plot map with completed survey and topography" },
+      { src: viewLighthouse.url, alt: "View toward the Cape Mendocino lighthouse" },
       { src: taxiway.url, alt: "Shelter Cove airport taxiway near the property" },
       { src: boatLaunch.url, alt: "Shelter Cove boat launch" },
       { src: goodFishing.url, alt: "Fishing off the Shelter Cove coast" },
-      { src: plotmap.url, alt: "Plot map with completed survey and topography" },
-      { src: culdesac.url, alt: "Cul-de-sac engineering survey and topo drawing" },
+      { src: bigPicture.url, alt: "Wide view over the Shelter Cove coastline from the parcel" },
+      { src: aerial.url, alt: "Aerial view of the Deer Court cul-de-sac and surrounding lots" },
       { src: map.url, alt: "Area map showing the parcel location in Shelter Cove" },
     ],
     location: {
@@ -82,6 +86,7 @@ export const LISTINGS: Listing[] = [
     contact: {
       name: "Lost Coast Surf",
       email: "websurfshop@gmail.com",
+      phone: "415-SURF-509 (415-787-3509)SMS/text"
     },
   },
   {
@@ -92,11 +97,9 @@ export const LISTINGS: Listing[] = [
     cta: "Contact ",
     price: "$25",
     specs: [
-      { label: "Length", value: "9'0" },
-      { label: "Setup", value: "Single fin" },
-      { label: "Condition", value: "Water tight, minor pressure dings" },
-      { label: "Includes", value: "Board bag" },
-      { label: "Pickup", value: "Shelter Cove, CA" },
+      { label: "Work", value: "Tree work, Yard work, Mowing" },
+      { label: "Crew", value: "1-3 hearty boys" },
+      { label: "Tools", value: "Chainsaw, weed whacker, Ride-on lawnmower" },
     ],
     body: [
       "Weed whipping, chainsaw work, lawn and grass mowing. $25.",
@@ -106,6 +109,7 @@ export const LISTINGS: Listing[] = [
     contact: {
       name: "Lost Coast Surf",
       email: "websurfshop@gmail.com",
+      phone: "415-SURF-509 (415-787-3509)SMS/text"
     },
   },
 ];

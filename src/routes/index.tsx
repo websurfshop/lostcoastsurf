@@ -89,7 +89,7 @@ function BannerSection() {
           Local Board
         </h2>
         <span className="text-[9px] uppercase tracking-wider text-muted-foreground">
-          Edit listings in src/lib/listings.ts
+          
         </span>
       </div>
       <div className="grid gap-3">
