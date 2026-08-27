@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FishingIndexRouteImport } from './routes/fishing.index'
+import { Route as FishingAdminRouteImport } from './routes/fishing.admin'
 import { Route as ListingSlugRouteImport } from './routes/listing.$slug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,6 +24,11 @@ const FishingIndexRoute = FishingIndexRouteImport.update({
   path: '/fishing/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FishingAdminRoute = FishingAdminRouteImport.update({
+  id: '/fishing/admin',
+  path: '/fishing/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ListingSlugRoute = ListingSlugRouteImport.update({
   id: '/listing/$slug',
   path: '/listing/$slug',
@@ -31,30 +37,34 @@ const ListingSlugRoute = ListingSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/fishing/admin': typeof FishingAdminRoute
   '/listing/$slug': typeof ListingSlugRoute
   '/fishing/': typeof FishingIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/fishing/admin': typeof FishingAdminRoute
   '/listing/$slug': typeof ListingSlugRoute
   '/fishing': typeof FishingIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/fishing/admin': typeof FishingAdminRoute
   '/listing/$slug': typeof ListingSlugRoute
   '/fishing/': typeof FishingIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/listing/$slug' | '/fishing/'
+  fullPaths: '/' | '/fishing/admin' | '/listing/$slug' | '/fishing/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/listing/$slug' | '/fishing'
-  id: '__root__' | '/' | '/listing/$slug' | '/fishing/'
+  to: '/' | '/fishing/admin' | '/listing/$slug' | '/fishing'
+  id: '__root__' | '/' | '/fishing/admin' | '/listing/$slug' | '/fishing/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  FishingAdminRoute: typeof FishingAdminRoute
   ListingSlugRoute: typeof ListingSlugRoute
   FishingIndexRoute: typeof FishingIndexRoute
 }
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FishingIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/fishing/admin': {
+      id: '/fishing/admin'
+      path: '/fishing/admin'
+      fullPath: '/fishing/admin'
+      preLoaderRoute: typeof FishingAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/listing/$slug': {
       id: '/listing/$slug'
       path: '/listing/$slug'
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  FishingAdminRoute: FishingAdminRoute,
   ListingSlugRoute: ListingSlugRoute,
   FishingIndexRoute: FishingIndexRoute,
 }
