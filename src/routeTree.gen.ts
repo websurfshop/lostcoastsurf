@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as FishingIndexRouteImport } from './routes/fishing.index'
 import { Route as ListingSlugRouteImport } from './routes/listing.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FishingIndexRoute = FishingIndexRouteImport.update({
+  id: '/fishing/',
+  path: '/fishing/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ListingSlugRoute = ListingSlugRouteImport.update({
@@ -26,27 +32,31 @@ const ListingSlugRoute = ListingSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/listing/$slug': typeof ListingSlugRoute
+  '/fishing/': typeof FishingIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/listing/$slug': typeof ListingSlugRoute
+  '/fishing': typeof FishingIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/listing/$slug': typeof ListingSlugRoute
+  '/fishing/': typeof FishingIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/listing/$slug'
+  fullPaths: '/' | '/listing/$slug' | '/fishing/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/listing/$slug'
-  id: '__root__' | '/' | '/listing/$slug'
+  to: '/' | '/listing/$slug' | '/fishing'
+  id: '__root__' | '/' | '/listing/$slug' | '/fishing/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ListingSlugRoute: typeof ListingSlugRoute
+  FishingIndexRoute: typeof FishingIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fishing/': {
+      id: '/fishing/'
+      path: '/fishing'
+      fullPath: '/fishing/'
+      preLoaderRoute: typeof FishingIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/listing/$slug': {
@@ -71,6 +88,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ListingSlugRoute: ListingSlugRoute,
+  FishingIndexRoute: FishingIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
