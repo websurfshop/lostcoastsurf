@@ -49,7 +49,7 @@ export const Route = createFileRoute("/fishing/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: FishingPage;
+  component: FishingPage,
 });
 
 const n1 = (v: number | null | undefined, d = 1) =>
