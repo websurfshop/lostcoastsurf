@@ -174,7 +174,10 @@ export function fishWord(score: number): string {
 /* -------------------------------- fetchers --------------------------------- */
 
 async function getJson(url: string) {
-  const res = await fetch(url, { headers: { accept: "application/json" } });
+  const res = await fetch(url, {
+    headers: { accept: "application/json" },
+    signal: AbortSignal.timeout(12000),
+  });
   if (!res.ok) throw new Error(`${res.status} ${url}`);
   const text = await res.text();
   if (/^\s*</.test(text)) throw new Error(`Non-JSON (HTML) response from ${url}`);
@@ -183,17 +186,20 @@ async function getJson(url: string) {
 
 /** Fetch plain text through public relays because the origin blocks CORS. */
 async function getRelayedText(target: string, valid: (body: string) => boolean) {
-  const sources = [
-    `https://r.jina.ai/${target}`,
-    `https://corsproxy.io/?${encodeURIComponent(target)}`,
-    `https://api.allorigins.win/raw?url=${encodeURIComponent(target)}`,
-    target,
+  const sources: { url: string; json?: boolean }[] = [
+    { url: `https://proxy.cors.sh/${target}` },
+    { url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(target)}` },
+    { url: `https://api.allorigins.win/get?url=${encodeURIComponent(target)}`, json: true },
+    { url: `https://r.jina.ai/${target}` },
+    { url: `https://corsproxy.io/?${encodeURIComponent(target)}` },
+    { url: target },
   ];
   for (const src of sources) {
     try {
-      const res = await fetch(src);
+      const res = await fetch(src.url, { signal: AbortSignal.timeout(9000) });
       if (!res.ok) continue;
-      const body = await res.text();
+      const raw = await res.text();
+      const body = src.json ? ((JSON.parse(raw)?.contents as string) ?? "") : raw;
       if (valid(body)) return body;
     } catch {
       /* next relay */

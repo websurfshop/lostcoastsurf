@@ -183,7 +183,16 @@ function Index() {
       </header>
 
       <main className="mx-auto max-w-md space-y-8 px-4 py-8">
+        <Link
+          to="/fishing"
+          className="flex animate-rise items-center justify-between border border-foreground/20 bg-card/60 p-3 text-[10px] font-bold uppercase tracking-widest transition-colors hover:bg-foreground hover:text-background"
+        >
+          <span>Can I Fish? — Shelter Cove fishing briefing</span>
+          <span>&rarr;</span>
+        </Link>
+
         <BannerSection />
+
 
         <section className="animate-rise">
 

@@ -277,6 +277,7 @@ async function fetchBuoy(): Promise<BuoyObs> {
   // NDBC sends no CORS headers, so try public text relays in order and fall
   // back to the direct URL last.
   const sources = [
+    `https://proxy.cors.sh/${target}`,
     `https://r.jina.ai/${target}`,
     `https://corsproxy.io/?${encodeURIComponent(target)}`,
     `https://api.allorigins.win/raw?url=${encodeURIComponent(target)}`,
