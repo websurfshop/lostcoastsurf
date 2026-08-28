@@ -174,7 +174,10 @@ export function fishWord(score: number): string {
 /* -------------------------------- fetchers --------------------------------- */
 
 async function getJson(url: string) {
-  const res = await fetch(url, { headers: { accept: "application/json" } });
+  const res = await fetch(url, {
+    headers: { accept: "application/json" },
+    signal: AbortSignal.timeout(12000),
+  });
   if (!res.ok) throw new Error(`${res.status} ${url}`);
   const text = await res.text();
   if (/^\s*</.test(text)) throw new Error(`Non-JSON (HTML) response from ${url}`);
@@ -191,7 +194,7 @@ async function getRelayedText(target: string, valid: (body: string) => boolean) 
   ];
   for (const src of sources) {
     try {
-      const res = await fetch(src);
+      const res = await fetch(src, { signal: AbortSignal.timeout(9000) });
       if (!res.ok) continue;
       const body = await res.text();
       if (valid(body)) return body;
