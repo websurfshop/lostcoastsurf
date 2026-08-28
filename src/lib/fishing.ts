@@ -187,6 +187,7 @@ async function getJson(url: string) {
 /** Fetch plain text through public relays because the origin blocks CORS. */
 async function getRelayedText(target: string, valid: (body: string) => boolean) {
   const sources: { url: string; json?: boolean }[] = [
+    { url: `https://proxy.cors.sh/${target}` },
     { url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(target)}` },
     { url: `https://api.allorigins.win/get?url=${encodeURIComponent(target)}`, json: true },
     { url: `https://r.jina.ai/${target}` },
