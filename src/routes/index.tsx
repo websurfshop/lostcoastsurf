@@ -404,6 +404,7 @@ function Index() {
             <ExtLink href={LINKS.marine}>NWS Marine Forecast (Eureka)</ExtLink>
             <ExtLink href={LINKS.weather}>NWS Weather Forecast — Shelter Cove</ExtLink>
             <ExtLink href={LINKS.buoy}>NDBC Station {BUOY_ID}</ExtLink>
+            <ExtLink href={LINKS.support}>Support the Report - Everyone has a wave with their name on it  </ExtLink>  
           </div>
           <div className="pb-12 text-center text-[9px] uppercase tracking-widest text-muted-foreground">
             Lost Coast Surf Monitor · lostcoastsurf.com

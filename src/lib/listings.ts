@@ -20,6 +20,11 @@ const topOfLot = { url: `${P}/Top_of_Lot.jpg` };
 const topOfLot2 = { url: `${P}/Top_of_Lot2.jpg` };
 const view = { url: `${P}/View.jpg` };
 const viewLighthouse = { url: `${P}/View_of_Lighthouse.jpg` };
+const whip = { url: `${P}/whip.jpg` };
+const whip2 = { url: `${P}/whip2.jpg` };
+const chainsaw = { url: `${P}/chainsaw.jpg` };
+const brush = { url: `${P}/brush.jpg` };
+const ride = { url: `${P}/ride.jpg` };
 
 export type Photo = { src: string; alt: string };
 
@@ -105,9 +110,16 @@ export const LISTINGS: Listing[] = [
       "Weed whipping, chainsaw work, lawn and grass mowing. $25.",
       "Good looking and reliable... lol",
     ],
-    photos: [],
+    photos: [
+      { src: whip.url, alt: "Weed whipping" },
+      { src: ride.url, alt: "Mowing" },
+      { src: brush.url, alt: "Brush clearing" },
+      { src: whip2.url, alt: "Mowing" },
+      { src: chainsaw.url, alt: "Tree cutting and limbing" },
+    ],
+
     contact: {
-      name: "Lost Coast Surf",
+      name: "Lost Coast Surfers",
       email: "websurfshop@gmail.com",
       phone: "415-SURF-509 (415-787-3509)SMS/text"
     },

@@ -18,6 +18,7 @@ export const LINKS = {
   marine: "https://forecast.weather.gov/shmrn.php?mz=pzz470",
   buoy: `https://www.ndbc.noaa.gov/station_page.php?station=${BUOY_ID}`,
   weather: `https://forecast.weather.gov/MapClick.php?lat=${LAT}&lon=${LON}`,
+  support: "https://www.paypal.com/paypalme/lostcoastsurf ", 
 };
 
 /* BANNERS / Local Board listings now live in src/lib/listings.ts */
