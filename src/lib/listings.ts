@@ -19,6 +19,7 @@ const taxiway = { url: `${P}/Taxiway_30.jpg` };
 const topOfLot = { url: `${P}/Top_of_Lot.jpg` };
 const topOfLot2 = { url: `${P}/Top_of_Lot2.jpg` };
 const view = { url: `${P}/View.jpg` };
+const topo= { url: `${P}/topo.jpg` };
 const viewLighthouse = { url: `${P}/View_of_Lighthouse.jpg` };
 const whip = { url: `${P}/whip.jpg` };
 const whip2 = { url: `${P}/whip2.jpg` };
@@ -75,8 +76,9 @@ export const LISTINGS: Listing[] = [
       { src: topOfLot.url, alt: "Standing at the top of the lot looking toward the ocean" },
       { src: topOfLot2.url, alt: "Second view from the top of the lot" },
       { src: gentleSlope.url, alt: "Gentle slope across the buildable portion of the lot" },
-      { src: plotmap.url, alt: "Plot map with completed survey and topography" },
+      { src: topo.url, alt: "Topographic map completed by Baird Engineering" },
       { src: viewLighthouse.url, alt: "View toward the Cape Mendocino lighthouse" },
+      { src: plotmap.url, alt: "Plot map with completed survey and topography" },
       { src: taxiway.url, alt: "Shelter Cove airport taxiway near the property" },
       { src: boatLaunch.url, alt: "Shelter Cove boat launch" },
       { src: goodFishing.url, alt: "Fishing off the Shelter Cove coast" },
